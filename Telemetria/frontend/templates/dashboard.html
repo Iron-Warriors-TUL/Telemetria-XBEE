@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Telemetry</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<!-- PANEL STEROWANIA -->
+<div class="control">
+    <div class="field">
+        <span>LICZBA OKRĄŻEŃ</span>
+        <input id="max_laps" type="number" value="10">
+    </div>
+
+    <div class="field">
+        <span>DOCELOWY CZAS OKRĄŻENIA (s)</span>
+        <input id="lap_target_time" type="number" value="90">
+    </div>
+
+    <button onclick="start()">START</button>
+    <button onclick="reset()">RESET</button>
+    <button id="saveBtn" onclick="save()" disabled>ZAPISZ WYNIKI</button>
+</div>
+
+<!-- CZASY -->
+<div class="top">
+    <div class="time-box">
+        <div class="label">CZAS OKRĄŻENIA</div>
+        <div class="value" id="lap_time">--:--</div>
+    </div>
+
+    <div class="time-box">
+        <div class="label">POZOSTAŁY DOCELOWY CZAS OKRĄŻENIA</div>
+        <div class="value" id="lap_time_remaining">--:--</div>
+    </div>
+
+    <div class="time-box">
+        <div class="label">POZOSTAŁY DOCELOWY CZAS WYŚCIGU</div>
+        <div class="value" id="race_time_remaining">--:--</div>
+    </div>
+
+    <div class="time-box">
+        <div class="label">REZERWA / STRATA</div>
+        <div class="value fixed-width" id="time_delta">--</div>
+    </div>
+</div>
+
+<!-- LICZNIKI -->
+<div class="center">
+    <div class="gauge">
+        <div class="gauge-label">RPM</div>
+        <div class="gauge-value" id="rpm">0</div>
+    </div>
+
+    <div class="gauge big">
+        <div class="gauge-label">KM/H</div>
+        <div class="gauge-value" id="speed">0</div>
+    </div>
+</div>
+
+<!-- INFO -->
+<div class="bottom">
+    <div class="info lap-info">
+        Okrążenie:
+        <button onclick="lapDec()">−</button>
+        <span id="lap_current">-</span>/<span id="lap_total">-</span>
+        <button onclick="lapInc()">+</button>
+    </div>
+
+    <div class="info">
+        Temp. silnika: <span id="engine_temp">-</span> °C
+    </div>
+
+    <div class="info">
+        Temp. oleju: <span id="oil_temp">-</span> °C
+    </div>
+</div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

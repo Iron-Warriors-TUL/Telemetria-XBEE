@@ -1,0 +1,158 @@
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    background: #111;
+    color: #eee;
+    font-family: Arial, sans-serif;
+
+    display: flex;
+    flex-direction: column;
+    font-size: 95%;
+}
+
+/* Panel sterowania */
+
+.control {
+    padding: 20px;
+    background: #1b1b1b;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: flex-end;
+    flex-shrink: 0;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    font-size: 15px;
+}
+
+.field span {
+    color: orange;
+    margin-bottom: 6px;
+}
+
+.field input {
+    padding: 9px;
+    background: #222;
+    border: none;
+    color: white;
+    width: 170px;
+    font-size: 15px;
+}
+
+button {
+    padding: 10px 22px;
+    background: orange;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+/* Czasy */
+
+.top {
+    display: flex;
+    justify-content: space-around;
+    padding: 24px;
+    flex-shrink: 0;
+}
+
+.time-box {
+    text-align: center;
+}
+
+.label {
+    font-size: 15px;
+    color: #aaa;
+}
+
+.value {
+    font-size: 54px;
+    font-weight: bold;
+
+    font-variant-numeric: tabular-nums;
+    min-width: 150px;
+    text-align: center;
+}
+
+/* Liczniki */
+
+.center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+
+.gauge {
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: #222;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.gauge.big {
+    width: 430px;
+    height: 430px;
+}
+
+.gauge-label {
+    font-size: 17px;
+    color: #aaa;
+}
+
+.gauge-value {
+    font-size: 78px;
+    color: orange;
+}
+
+/* Dół */
+
+.bottom {
+    display: flex;
+    justify-content: space-around;
+    padding: 24px;
+    background: #181818;
+    flex-shrink: 0;
+}
+
+.info {
+    font-size: 26px;
+}
+
+/* + / - */
+
+.info button {
+    background: #333;
+    color: orange;
+    border: none;
+    font-size: 22px;
+    margin: 0 8px;
+    cursor: pointer;
+}
+
+.info button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.fixed-width {
+    display: inline-block;
+    min-width: 180px;
+    text-align: center;
+}
