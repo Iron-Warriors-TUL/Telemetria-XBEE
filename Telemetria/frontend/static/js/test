@@ -1,0 +1,8 @@
+    oil_temp.innerText = data.oil_temp;
+    if (data.oil_temp < OIL_TEMP_MIN_LIMIT) {
+        oil_temp.style.color = "white";
+    } else if (data.oil_temp >= OIL_TEMP_MIN_LIMIT && data.oil_temp <= OIL_TEMP_MAX_LIMIT) {
+        oil_temp.style.color = "green";
+    } else {
+        oil_temp.style.color = "red";
+    }

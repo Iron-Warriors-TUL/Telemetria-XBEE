@@ -96,19 +96,14 @@ button {
 }
 
 .gauge {
-    width: 320px;
-    height: 320px;
+    width: 250px;
+    height: 250px;
     border-radius: 50%;
     background: #222;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
-
-.gauge.big {
-    width: 430px;
-    height: 430px;
 }
 
 .gauge-label {

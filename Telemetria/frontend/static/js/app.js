@@ -1,6 +1,18 @@
 /* Wartości od których kolor temperatur robi się czerwony */
-const ENGINE_TEMP_LIMIT = 100;
-const OIL_TEMP_LIMIT = 110;
+// const ENGINE_TEMP_LIMIT = 100;
+// const OIL_TEMP_LIMIT = 110;
+
+const ENGINE_TEMP_MIN_LIMIT = 90;
+const ENGINE_TEMP_MAX_LIMIT = 120;
+
+const OIL_TEMP_MIN_LIMIT = 90;
+const OIL_TEMP_MAX_LIMIT = 120;
+
+const EGT_MIN_LIMIT = 500;
+const EGT_MAX_LIMIT = 1000;
+
+const BATTERY_VOLTAGE_MIN_LIMIT = 14.0;
+const BATTERY_VOLTAGE_MAX_LIMIT = 14.8;
 
 function formatTime(sec) {
     const sign = sec < 0 ? "-" : "";
@@ -88,10 +100,9 @@ function clearUI() {
     speed.innerText = "0";
 
     engine_temp.innerText = "-";
-    engine_temp.style.color = "orange";
-
     oil_temp.innerText = "-";
-    oil_temp.style.color = "orange";
+    intake_temp.innerText = "-";
+    emission_temp.innerText = "-";
 
     lap_current.innerText = "-";
     lap_total.innerText = "-";
@@ -100,7 +111,17 @@ function clearUI() {
 async function update() {
     const res = await fetch("/api/state");
     const data = await res.json();
-
+    const battery_val = document.getElementById('battery_voltage');
+    if (battery_val) {
+        battery_val.innerText = data.battery_voltage.toFixed(1);
+        if (data.battery_voltage < BATTERY_VOLTAGE_MIN_LIMIT) {
+            battery_val.style.color = "red";
+        } else if (data.battery_voltage >= BATTERY_VOLTAGE_MIN_LIMIT && data.battery_voltage <= BATTERY_VOLTAGE_MAX_LIMIT) {
+            battery_val.style.color = "orange";
+        } else {
+            battery_val.style.color = "white";
+        }
+    }
     if (!data.running) {
         if (data.finished) {
             time_delta.innerText =
@@ -129,13 +150,33 @@ async function update() {
     speed.innerText = data.speed;
 
     engine_temp.innerText = data.engine_temp;
-    engine_temp.style.color =
-        data.engine_temp >= ENGINE_TEMP_LIMIT ? "red" : "orange";
+    if (data.engine_temp < ENGINE_TEMP_MIN_LIMIT) {
+        engine_temp.style.color = "white";
+    } else if (data.engine_temp >= ENGINE_TEMP_MIN_LIMIT && data.engine_temp <= ENGINE_TEMP_MAX_LIMIT) {
+        engine_temp.style.color = "green";
+    } else {
+        engine_temp.style.color = "red";
+    }
 
     oil_temp.innerText = data.oil_temp;
-    oil_temp.style.color =
-        data.oil_temp >= OIL_TEMP_LIMIT ? "red" : "orange";
+    if (data.oil_temp < OIL_TEMP_MIN_LIMIT) {
+        oil_temp.style.color = "white";
+    } else if (data.oil_temp >= OIL_TEMP_MIN_LIMIT && data.oil_temp <= OIL_TEMP_MAX_LIMIT) {
+        oil_temp.style.color = "green";
+    } else {
+        oil_temp.style.color = "red";
+    }
 
+    emission_temp.innerText = data.emission_temp;
+    if (data.emission_temp < EGT_MIN_LIMIT) {
+        emission_temp.style.color = "white";
+    } else if (data.emission_temp >= EGT_MIN_LIMIT && data.emission_temp <= EGT_MAX_LIMIT) {
+        emission_temp.style.color = "green";
+    } else {
+        emission_temp.style.color = "red";
+    }
+
+    intake_temp.innerText = data.intake_temp;
     lap_current.innerText = data.lap_current;
     lap_total.innerText = data.lap_total;
 }

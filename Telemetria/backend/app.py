@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, render_template
 from telemetry.race_state import RaceState
-from telemetry.data_source import MockTelemetrySource
+from telemetry.data_source import XBeeTelemetrySource
 from telemetry.race_logger import RaceLogger
 
 app = Flask(
@@ -9,7 +9,7 @@ app = Flask(
     static_folder="../frontend/static"
 )
 
-data_source = MockTelemetrySource()
+data_source = XBeeTelemetrySource(port="/dev/serial0", baud=115200)
 logger = RaceLogger()
 race = RaceState(data_source, logger)
 
@@ -17,11 +17,6 @@ race = RaceState(data_source, logger)
 @app.route("/")
 def index():
     return render_template("dashboard.html")
-
-
-@app.route("/api/state")
-def state():
-    return jsonify(race.get_state())
 
 
 @app.route("/api/config", methods=["POST"])
@@ -61,6 +56,18 @@ def save():
     filename = logger.save_csv()
     return jsonify({"file": filename})
 
+@app.route("/api/state")
+def state():
+    s = race.get_state()
+    
+    # Jeśli wyścig trwa, wyślij dane do bolidu
+    if s.get("running"):
+        # Format: L:numer_okrążenia;D:delta
+        # Używamy skróconych kluczy, by oszczędzać pasmo
+        msg = f"L:{s['lap_current']};D:{s['time_delta']}"
+        data_source.send_to_bolid(msg)
+        
+    return jsonify(s)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)

@@ -85,7 +85,7 @@ class RaceState:
             return {
                 "running": False,
                 "finished": True,
-                "time_delta": round(self.final_delta, 1)
+                "time_delta": int(round(self.final_delta))
             }
 
         if not self.running:
@@ -120,9 +120,9 @@ class RaceState:
 
             "race_time_remaining": round(race_target_time - elapsed, 1),
 
-            "time_delta": round(
-                (self.current_lap * self.target_lap_time) - elapsed, 1
-            ), 
+            "time_delta": int(round(
+                (self.current_lap * self.target_lap_time) - elapsed
+            )), 
 
             **sample
         }
