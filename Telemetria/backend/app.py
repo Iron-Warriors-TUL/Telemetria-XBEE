@@ -11,8 +11,8 @@ app = Flask(
     static_folder="../frontend/static"
 )
 
-# data_source = XBeeTelemetrySource(port="/dev/serial0", baud=115200)
-data_source = MockTelemetrySource()
+data_source = XBeeTelemetrySource(port="/dev/serial0", baud=115200)
+# data_source = MockTelemetrySource()
 logger = RaceLogger()
 race = RaceState(data_source, logger)
 
@@ -58,7 +58,11 @@ def lap():
 def save():
     meta = request.json
     filename = logger.save_csv(meta)
-    return jsonify({"file": filename})
+    if filename:
+        logger.generate_report_and_push(filename)
+        return jsonify({"file": filename, "status": "saved_and_pushed"})
+
+    return jsonify({"file": None, "status": "no_data"}), 400
 
 
 @app.route("/api/state")
@@ -76,11 +80,11 @@ def state():
             lap_number=s.get('lap_current'),
             speed=combined_data.get('speed'),
             rpm=combined_data.get('rpm'),
-            oil_temperature=combined_data.get('oil_temp'),
-            engine_temperature=combined_data.get('engine_temp'),
-            intake_temperature=combined_data.get('intake_temp'),
-            emission_temperature=combined_data.get('emission_temp'),
-            battery_voltage=combined_data.get('battery_voltage')
+            oil=combined_data.get('oil_temp'),
+            clt=combined_data.get('engine_temp'),
+            iat=combined_data.get('intake_temp'),
+            egt=combined_data.get('emission_temp'),
+            bv=combined_data.get('battery_voltage')
         )
 
         msg = f"L:{s['lap_current']};D:{s['time_delta']}"
