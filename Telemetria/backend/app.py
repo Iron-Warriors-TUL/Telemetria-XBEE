@@ -2,6 +2,8 @@ from flask import Flask, jsonify, request, render_template
 from telemetry.race_state import RaceState
 from telemetry.data_source import XBeeTelemetrySource
 from telemetry.race_logger import RaceLogger
+from telemetry.mock_data import MockTelemetrySource
+import time
 
 app = Flask(
     __name__,
@@ -9,7 +11,8 @@ app = Flask(
     static_folder="../frontend/static"
 )
 
-data_source = XBeeTelemetrySource(port="/dev/serial0", baud=115200)
+# data_source = XBeeTelemetrySource(port="/dev/serial0", baud=115200)
+data_source = MockTelemetrySource()
 logger = RaceLogger()
 race = RaceState(data_source, logger)
 
@@ -53,21 +56,38 @@ def lap():
 
 @app.route("/api/save", methods=["POST"])
 def save():
-    filename = logger.save_csv()
+    meta = request.json
+    filename = logger.save_csv(meta)
     return jsonify({"file": filename})
+
 
 @app.route("/api/state")
 def state():
     s = race.get_state()
-    
+
+    sample = data_source.get_sample(0, 0)
+    combined_data = {**sample, **s}
+
     # Jeśli wyścig trwa, wyślij dane do bolidu
     if s.get("running"):
-        # Format: L:numer_okrążenia;D:delta
-        # Używamy skróconych kluczy, by oszczędzać pasmo
+        race_time = time.time() - race.start_time
+        logger.log_data(
+            race_time=race_time,
+            lap_number=s.get('lap_current'),
+            speed=combined_data.get('speed'),
+            rpm=combined_data.get('rpm'),
+            oil_temperature=combined_data.get('oil_temp'),
+            engine_temperature=combined_data.get('engine_temp'),
+            intake_temperature=combined_data.get('intake_temp'),
+            emission_temperature=combined_data.get('emission_temp'),
+            battery_voltage=combined_data.get('battery_voltage')
+        )
+
         msg = f"L:{s['lap_current']};D:{s['time_delta']}"
         data_source.send_to_bolid(msg)
-        
-    return jsonify(s)
+
+    return jsonify(combined_data)
+
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=3000, debug=False)

@@ -57,12 +57,12 @@ class RaceState:
             expected = self.target_lap_time
             delta_time = expected - lap_time
 
-            self.logger.log_lap(
-                self.current_lap,
-                lap_time,
-                delta_time,
-                self.max_speed_current_lap
-            )
+            # self.logger.log_lap(
+            #     self.current_lap,
+            #     lap_time,
+            #     delta_time,
+            #     self.max_speed_current_lap
+            # )
 
             if self.current_lap >= self.max_laps:
                 self.running = False
@@ -122,7 +122,7 @@ class RaceState:
 
             "time_delta": int(round(
                 (self.current_lap * self.target_lap_time) - elapsed
-            )), 
+            )),
 
             **sample
         }

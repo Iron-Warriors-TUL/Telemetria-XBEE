@@ -75,14 +75,38 @@ async function lapDec() {
 }
 
 /* Zapis danych */
+function save() {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    document.getElementById('raceDateTime').value = now.toISOString().slice(0, 16);
 
-async function save() {
-    const res = await fetch("/api/save", { method: "POST" });
+    document.getElementById('saveModal').style.display = 'flex';
+}
+
+function closeSaveModal() {
+    document.getElementById('saveModal').style.display = 'none';
+}
+
+async function confirmSave() {
+    const payload = {
+        date: document.getElementById('raceDateTime').value,
+        driver: document.getElementById('driverName').value,
+        place: document.getElementById('racePlace').value,
+        comment: document.getElementById('raceComment').value
+    };
+
+    const res = await fetch("/api/save", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload)
+    });
+
     const data = await res.json();
+    closeSaveModal();
 
     if (data.file) {
         alert("Zapisano dane wyścigu:\n" + data.file);
-        saveBtn.disabled = true;
+        document.getElementById('saveBtn').disabled = true;
     } else {
         alert("Brak danych do zapisania");
     }
@@ -112,6 +136,23 @@ async function update() {
     const res = await fetch("/api/state");
     const data = await res.json();
     const battery_val = document.getElementById('battery_voltage');
+    const body_element = document.body;
+
+    if (!data.running) {
+        bodyElement.classList.remove('delay');
+        bodyElement.classList.add('ok');
+    } else {
+        if (data.time_delta >= 0) {
+            body_element.classList.remove('delay');
+            body_element.classList.add('ok');
+        } else {
+            body_element.classList.remove('ok');
+            body_element.classList.add('delay');
+        }
+    }
+
+
+
     if (battery_val) {
         battery_val.innerText = data.battery_voltage.toFixed(1);
         if (data.battery_voltage < BATTERY_VOLTAGE_MIN_LIMIT) {

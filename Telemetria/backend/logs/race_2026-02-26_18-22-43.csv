@@ -1,0 +1,9 @@
+# data: 2026-02-26 18:22
+# kierowca: hubert
+# miejsce: pabianicka
+# komentarz: ioio
+race_time,lap_number,speed,rpm,oil_temperature,engine_temperature,intake_temperature,emission_temperature,battery_voltage
+0.12,1,43,5124,109,95,35,600,14.2
+0.73,1,59,6998,109,95,35,600,14.2
+1.34,1,45,5331,109,95,35,600,14.2
+1.94,3,49,5748,109,95,35,600,14.2

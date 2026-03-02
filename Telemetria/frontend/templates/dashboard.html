@@ -5,7 +5,7 @@
     <title>Telemetry</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
-<body>
+<body class="ok">
 
 <!-- PANEL STEROWANIA -->
 <div class="control">
@@ -87,6 +87,24 @@
 
     <div class="info">
         BV: <span id="battery_voltage">-</span> V
+    </div>
+</div>
+
+<div id="saveModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>Zapisz wyniki</h3>
+
+        <label>Data i godzina wyścigu:</label>
+        <input type="datetime-local" id="raceDateTime">
+
+        <input type="text" id="driverName" placeholder="Kierowca">
+        <input type="text" id="racePlace" placeholder="Miejsce">
+        <textarea id="raceComment" placeholder="Komentarz"></textarea>
+
+        <div class="modal-buttons">
+            <button onclick="closeSaveModal()" class="btn-cancel">ANULUJ</button>
+            <button onclick="confirmSave()">ZAPISZ</button>
+        </div>
     </div>
 </div>
 
